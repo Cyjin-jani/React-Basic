@@ -1,5 +1,7 @@
 <html>
     <head>
+        <meta charset="UFT-8" />
+        <title>구구단</title>
         <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
@@ -9,31 +11,120 @@
         <div id="root"></div> <!-- result: <div id='root'><button>Like</button></div> -->
         <script type="text/babel">
             //const e = React.createElement;
-            class LikeButton extends React.Component {
+            // class LikeButton extends React.Component {
+            //     constructor(props) {
+            //         super(props);
+            //         //바뀔 여지가 있는 부분이 상태(state)이다.
+            //         this.state = {
+            //             liked: false,
+            //         };
+            //     }
+
+            //     render() {
+            //         return <button type="submit"
+            //         onClick={()=> { this.setState({ liked: true})}}>
+            //         {this.state.liked === true ? 'Liked' : 'Like'}
+            //         </button>;
+            //         //JSX (JavaScript + XML)
+
+            //         //e('button', 
+            //         //{ onClick: () => { this.setState({ liked: true })}, type: 'submit' },
+            //         //this.state.liked === true ? 'Liked' : 'Like');
+                     
+            //     };
+            // }
+            //구구단 만들기
+            class GuGuDan extends React.Component {
                 constructor(props) {
                     super(props);
-                    //바뀔 여지가 있는 부분이 상태(state)이다.
                     this.state = {
-                        liked: false,
+                        first: Math.ceil(Math.random() * 9),
+                        second: Math.ceil(Math.random() * 9),
+                        value: '',
+                        result: '',
                     };
                 }
+                //현업에서는 주로 콘스트럭터 안 쓰고 아래처럼 사용.
+                // state = {
+                //         first: Math.ceil(Math.random() * 9),
+                //         second: Math.ceil(Math.random() * 9),
+                //         value: '',
+                //         result: '',
+                // };
+                
+                onSubmit = (e)=> {
+                    e.preventDefault();
+                    if (parseInt(this.state.value) === this.state.first * this.state.second) {
+                        // this.setState({
+                        //     result: `${this.state.value}, 정답!`,
+                        //     first: Math.ceil(Math.random()*9),
+                        //     second: Math.ceil(Math.random()*9),
+                        //     value: '', 
+                        // });
+                        //위와 같은 경우는, 예전값, 그리고 미래 바뀔 값을 나타내는 게 모호하기 때문에,
+                        //아래와 같은 방식으로 더 많이 쓰임
+                        this.setState((prevState) => {
+                            return {
+                                result: `${prevState.value}, 정답!`,
+                                first: Math.ceil(Math.random()*9),
+                                second: Math.ceil(Math.random()*9),
+                                value: '', 
+                            };
+                        });
+                        this.input.focus();
+                        //왜냐하면 setState는 비동기이기 떄문에, 아래와 같이 카운터 함수를 쓸 경우 문제가 됨.
+                        // this.setState({
+                        //     value: this.state.value + 1,
+                        // });
+                        // this.setState({
+                        //     value: this.state.value + 1,
+                        // });
+                        // this.setState({
+                        //     value: this.state.value + 1,
+                        // });
+                        // 이렇게 3번 각기 사용된 경우, 우리는 최종적으로 새로운 value는 기존 value +3을 예상하나,
+                        //비동기이기 때문에, 새로운 value가 기존 value + 1이 되어버릴 수도 있다<div class=""></div>
+                        //그러므로 위와 같은 상황을 방지하기 위해 
+                        //기존의 값을 가져와서 변경할 경우, setState에 함수를 사용하여 return하는 방식으로 하는 것이 좋다.
+
+                    } else {
+                        this.setState({
+                            result: '땡! 다시 풀어보아요',
+                            value: '',
+                        });
+                        //이게 document.querySelector('input').focus()한 것과 같음.
+                        this.input.focus();
+                    }
+                }
+
+                onChange = (e) => {
+                    this.setState({value: e.target.value});
+                }                     
+
+                //class에 input 선언 ref를 쓰기 위함.
+                input;
+                onRefInput = (c) => { this.input = c; };
 
                 render() {
-                    return <button type="submit"
-                    onClick={()=> { this.setState({ liked: true})}}>
-                    {this.state.liked === true ? 'Liked' : 'Like'}
-                    </button>;
-                    //JSX (JavaScript + XML)
-
-                    //e('button', 
-                    //{ onClick: () => { this.setState({ liked: true })}, type: 'submit' },
-                    //this.state.liked === true ? 'Liked' : 'Like');
-                     
-                };
+                    console.log("렌더링"); //setState를 하게되면 렌더링이 실행됨. 즉, 너무 많이 스테이트를 바꾸면 렌더링이 되어 버림.
+                    return (
+                        <React.Fragment>
+                            <div>{this.state.first} 곱하기 {this.state.second}는?</div>
+                            <form onSubmit={this.onSubmit}>
+                                <input ref={this.onRefInput} type="number" value={this.state.value} onChange={this.onChange} />
+                                <button>입력!</button>
+                            </form>
+                            <div>{this.state.result}</div>
+                        </React.Fragment>
+                    );
+                }
             }
+
         </script>
         <script type="text/babel">
-            ReactDOM.render(<div><LikeButton /><LikeButton /><LikeButton /></div>, document.querySelector('#root'));
+            //ReactDOM.render(<div><LikeButton /><LikeButton /><LikeButton /></div>, document.querySelector('#root'));
+            ReactDOM.render(<GuGuDan />, document.querySelector('#root'));
+
         </script>
     </body>
 </html>
