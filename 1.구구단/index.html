@@ -107,12 +107,15 @@
 
                 render() {
                     console.log("렌더링"); //setState를 하게되면 렌더링이 실행됨. 즉, 너무 많이 스테이트를 바꾸면 렌더링이 되어 버림.
+                    //리액트에서는 html의 class, for 속성을 쓰지 못함. 그렇기에 
+                    //class대신 className, for 대신 htmlFor이라고 속성을 써주어야 한다.
+
                     return (
                         <React.Fragment>
                             <div>{this.state.first} 곱하기 {this.state.second}는?</div>
                             <form onSubmit={this.onSubmit}>
                                 <input ref={this.onRefInput} type="number" value={this.state.value} onChange={this.onChange} />
-                                <button>입력!</button>
+                                <button className="" htmlFor="">입력!</button>
                             </form>
                             <div>{this.state.result}</div>
                         </React.Fragment>
