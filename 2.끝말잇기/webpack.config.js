@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack'); //아래 플러그인에 필요한 웹팩
 
 module.exports = {
     name: 'wordRelay-setting',
@@ -7,7 +8,7 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx'], //확장자 지정해주면 알아서 해당 확장자의 파일을 찾게 됨.
     },
-    //중요한 부분. 엔트리와 아웃풋
+    //중요한 부분. 엔트리와 모듈, 아웃풋
     entry: {
         //이미 client.jsx에서 WordRelay.jsx를 불러오고 있기 때문에
         //따로 입력할 필요가 없다. (다른 파일을 불러오는 해당 파일만 입력해주면 됨.)
@@ -20,12 +21,23 @@ module.exports = {
             test: /\.jsx?/,
             loader: 'babel-loader',
             options: {
-                presets: ['@babel/preset-env', '@babel/preset-react'],
+                presets: [
+                ['@babel/preset-env', { //브라우저 옛 버전 등의 호환을 도와주는 놈. 최신 코드가 옛 버전에 대응이 안되기 때문.
+                    targets: {
+                        browsers: ['> 5% in KR', 'last 2 chrome versions'], //의미: 크롬 최신 2개버전 까지만 대응.
+                        //위 브라우저 목록으로 참고하기 좋은 사이트: https://github.com/browserslist/browserslist#queries
+                    }
+                }],
+                '@babel/preset-react'], //plugin들의 모음이 preset이다. 고로, 이 프리셋 각각에 옵션할당이 가능함.
                 plugins: ['@babel/plugin-proposal-class-properties'],
             }
         }], //여러개의 규칙을 적용할 수 있기 때문에 배열을 사용.
     },
-
+    //plugin은 확장프로그램이라고 보면 된다.
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ debug: true}), 
+        //로더는 여기서 module의 rules이하 내용들인데 각 내용들에 전부 디버그를 트루로 해주는 것.
+    ],
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js'
@@ -40,5 +52,5 @@ module.exports = {
 npm i -D @babel/core (바벨 핵심 기능 -> 최신 문법으로 바꿔주는 기능 등)
 npm i -D @babel/preset-env (바벨이 자신의 브라우저 환경에 맞게 알아서 세팅해서 보여줌.)
 npm i -D @babel/preset-react (jsx를 쓰기 위해서 설치)
-npm i bable-loader (얘는 바벨과 웹팩을 연결해줌.)
+npm i babel-loader (얘는 바벨과 웹팩을 연결해줌.)
 */
