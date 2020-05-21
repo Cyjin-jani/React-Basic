@@ -29,21 +29,25 @@ module.exports = {
                     }
                 }],
                 '@babel/preset-react'], //plugin들의 모음이 preset이다. 고로, 이 프리셋 각각에 옵션할당이 가능함.
-                plugins: ['@babel/plugin-proposal-class-properties'],
+                plugins: [
+                    '@babel/plugin-proposal-class-properties',
+                    'react-hot-loader/babel',
+                ],
             }
         }], //여러개의 규칙을 적용할 수 있기 때문에 배열을 사용.
     },
     //plugin은 확장프로그램이라고 보면 된다.
     plugins: [
-        new webpack.LoaderOptionsPlugin({ debug: true}), 
         //로더는 여기서 module의 rules이하 내용들인데 각 내용들에 전부 디버그를 트루로 해주는 것.
+        new webpack.LoaderOptionsPlugin({ debug: true}),  
     ],
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: 'app.js'
+        path: path.join(__dirname, 'dist'), //실제 경로
+        filename: 'app.js',
+        publicPath: '/dist/', //가상의 경로 //nodejs에서 express.static과 비슷하다.
     }, //출력
 };
-
+//webpack.config를 바꾸게 되면, 핫로더를 쓰는 경우, 서버를 재시작 해줘야 함...
 
 //babel 자체가 jsx를 사용할 수 있게 해주는 것은 아님.
 //babel을 설치하고 바벨 내에서 jsx를 사용할 수 있게 세팅을 해줘야 함.
@@ -53,4 +57,9 @@ npm i -D @babel/core (바벨 핵심 기능 -> 최신 문법으로 바꿔주는 �
 npm i -D @babel/preset-env (바벨이 자신의 브라우저 환경에 맞게 알아서 세팅해서 보여줌.)
 npm i -D @babel/preset-react (jsx를 쓰기 위해서 설치)
 npm i babel-loader (얘는 바벨과 웹팩을 연결해줌.)
+
+// 자동으로 빌드 해줘서 변경내용이 바로 되도록 하는 것.
+npm i -D react-hot-loader
+npm i -D webpack-dev-server 서버가 있어야 프론트엔드의 변경점을 감지해서 바꿔주므로... nodemon같은 거임.
+
 */
