@@ -87,11 +87,12 @@ const WordRelay = () => {
     <>
         <div>{word}</div>
         <form onSubmit={onSubmitForm}>
-            <input ref={inputRef} value={value} onChange={onChangeInput} />
+            <label htmlFor="wordInput">글자를 입력하세요.</label>
+            <input id="wordInput" className="wordInput" ref={inputRef} value={value} onChange={onChangeInput} />
             <button>클릭!!</button>
         </form>
     <div>{result}</div>
-    <h1>핫로더 짱이다</h1>
+    <h1>핫로더 짱짱맨</h1>
     </>
     );
     
