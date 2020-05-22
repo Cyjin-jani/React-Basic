@@ -56,7 +56,7 @@ module.exports = {
 npm i -D @babel/core (바벨 핵심 기능 -> 최신 문법으로 바꿔주는 기능 등)
 npm i -D @babel/preset-env (바벨이 자신의 브라우저 환경에 맞게 알아서 세팅해서 보여줌.)
 npm i -D @babel/preset-react (jsx를 쓰기 위해서 설치)
-npm i babel-loader (얘는 바벨과 웹팩을 연결해줌.)
+npm i -D babel-loader (얘는 바벨과 웹팩을 연결해줌.)
 
 // 자동으로 빌드 해줘서 변경내용이 바로 되도록 하는 것.
 npm i -D react-hot-loader
