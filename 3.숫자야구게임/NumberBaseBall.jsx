@@ -69,9 +69,11 @@ class NumberBaseBall extends Component {
     onSubmitForm = (e) => { //숫자야구 로직
         e.preventDefault();
         if (this.state.value === this.state.answer.join('')) {
-            this.setState({
-                result: 'HoME RUN!!',
-                tries: [...this.state.tries, {try: this.state.value, result: '홈런!'}],
+            this.setState((prevState) => { //옛날 값을 넣는 것이므로 parameter설정을 해준다.
+                return {
+                    result: 'HoME RUN!!',
+                    tries: [...prevState.tries, {try: this.state.value, result: '홈런!'}],
+                }
             });
             alert('게임을 다시 시작합니다.');
             this.setState({
@@ -101,9 +103,11 @@ class NumberBaseBall extends Component {
                         ball += 1;
                     }
                 }
-                this.setState({
-                    tries: [...this.state.tries, { try: this.state.value, result: `${strike} 스트라이크, ${ball} 볼 입니다.`}],
-                    value: '',
+                this.setState((prevState) => {
+                    return {
+                        tries: [...prevState.tries, { try: this.state.value, result: `${strike} 스트라이크, ${ball} 볼 입니다.`}],
+                        value: '',
+                    }
                 });
             }
         }
