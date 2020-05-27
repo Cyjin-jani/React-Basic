@@ -42,7 +42,7 @@ client단(화면단)...에서는 바벨이 import를 처리해주므로 사용�
 //import Try from './Try';
 
 const React = require('react');
-const { Component } = React; 
+const { Component, createRef } = React; 
 const Try = require('./Try');
 
 function getNumbers() { //숫자 4개를 겹치지 않고 랜덤하게 뽑는 함수
@@ -81,6 +81,7 @@ class NumberBaseBall extends Component {
                 answer: getNumbers(),
                 tries: [],
             });
+            this.inputRef.current.focus(); //react의 craeteRef를 쓰게 될 경우는 current가 필요하다
         } else { //답 틀린 경우
             const answerArray = this.state.value.split('').map((v) => parseInt(v));
             let strike = 0;
@@ -95,6 +96,7 @@ class NumberBaseBall extends Component {
                     answer: getNumbers(),
                     tries: [],
                 });
+                this.inputRef.current.focus();
             } else { //10번 이내로 틀린 경우 기회를 줌
                 for (let i=0; i < 4; i+=1) {
                     if(answerArray[i] === this.state.answer[i]) {
@@ -109,6 +111,7 @@ class NumberBaseBall extends Component {
                         value: '',
                     }
                 });
+                this.inputRef.current.focus();
             }
         }
 
@@ -130,7 +133,16 @@ class NumberBaseBall extends Component {
     //     {fruit: '사과', taste: '맛없다' },
     // ];
 
-
+    //createRef를 사용
+    inputRef = createRef();
+    //createRef()를 쓰게 되면 더 이상 밑의 코드는 필요가 없다
+    //대신 함수로 쓰게 되면 안에 콘솔 로그를 찍거나, 미세한 컨트롤 등이 가능해진다 (함수이므로)
+    //간단하게 하고 싶으면 그냥 createRef를 쓰면 됨.
+    // onInputRef = (c) => {
+    //     this.inputRef = c;
+    // }
+    
+    //render안에는 절대 setState를 쓰는게 아니다. (무한반복돌아버림....)
     render() {
         // 계속 this.state를 쓰기 싫은 경우, 아래와 같이 선언하면 쓰지 않아도 된다.
         //이는 render()함수만이 아니고, 위의 onSubmitForm 함수 등에서도 똑같이 적용되는 원리이다
@@ -141,7 +153,7 @@ class NumberBaseBall extends Component {
             <h1> {result} </h1>   
             <form onSubmit={this.onSubmitForm}>
              {/* React에서는 태그 내 속성에서 단어가 바뀌면 대문자를 써주어야 한다. */}
-             <input maxLength={4} value={value} onChange={this.onChangeInput}/> 
+             <input ref={this.inputRef} maxLength={4} value={value} onChange={this.onChangeInput}/> 
              {/* //defaultValue를 쓸게 아니면 value와 onChange를 같이 세트로 써주어야 함. */}
             </form> 
         <div>시도: {tries.length}</div>
