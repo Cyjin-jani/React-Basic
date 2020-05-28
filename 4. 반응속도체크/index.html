@@ -1,0 +1,29 @@
+<html>
+<head>
+    <meta charset="UFT-8" />
+    <title>클릭 반응 속도 체크</title>
+    <style>
+        #screen {
+            width: 300px;
+            height: 200px;
+            text-align: center;
+            user-select: none;
+        }
+        #screen.waiting {
+            background-color: aqua;
+        }
+        #screen.ready {
+            background-color: red;
+            color: white;
+        }
+        #screen.now {
+            background-color: greenyellow;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="./dist/app.js"></script>
+</body>
+</html>
