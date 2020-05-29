@@ -65,6 +65,16 @@ const NumberBaseBall = memo(() => {
         </form> 
         <div>시도: {tries.length}</div>
         <ul>
+            {/* 평범하게 for써서 만들어보기 */}
+            {/* 이 코드는 바로 아래 map을 사용한 것과 같은 기능을 함 */}
+            {/* {(() => {
+                const array = [];
+                for (let i=0; i<array.length; i++) {
+                    //배열안에 jsx를 넣어서 리턴할 수도 있다!!
+                    array.push(<Try key={`${ i+1 }차 시도 : `} tryInfo = {v} />);
+                }
+                return array;
+            })()} */}
             {tries.map((v,i) => {
                 return (
                     <Try key={`${ i+1 }차 시도 : `} tryInfo = {v} />

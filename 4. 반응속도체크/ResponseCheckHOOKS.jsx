@@ -36,7 +36,7 @@ const ResponseCheck = () => {
          setState('waiting');
          setMessage('클릭해서 시작하세요.');
          setResult((prevResult) => {
-            return [...prevResult.result, endTime.current - startTime.current];
+            return [...prevResult, endTime.current - startTime.current];
          });
       }
    };
@@ -63,8 +63,21 @@ const ResponseCheck = () => {
          >
             {message}
          </div>
-         {/* 리액트에서는 if 조건문을 따로 쓸 수가 없어서 삼항 연산자를 써야만 한다. */}
-         {/* 그리고 for라는 반복문도 사용할 수 없기에, map함수를 써야 한다 */}
+         {/* 리액트에서의 if와 for 사용 (for는 numberbaseballhooks에 있음)*/}
+         {/* 함수 안에서는 기본적으로 if와 for가 사용 가능하기에, 함수형태로 만든다. 대신 즉시실행함수여야만 함 */}
+         
+         {/* 아래 renderAverage함수를 다시 적어보자 */}
+         {/* {(() => {
+            if (result.length === 0) {
+               return null;
+            } else {
+               return <>
+               <div> 평균 시간: {result.reduce((a,c) => a+c) / result.length}ms </div>
+               <button onClick={onReset}>리셋</button>
+            </>
+            }
+         })()} */}
+         
          {renderAverage()}
       </> 
    );
