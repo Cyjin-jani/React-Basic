@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom');
 
 const { hot } = require('react-hot-loader/root');
 
-const RSP = require('./RSP');
+const RSP = require('./RSP_HOOKS');
 
 const Hot = hot(RSP);
 

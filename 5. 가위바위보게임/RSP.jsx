@@ -38,7 +38,7 @@ class RSP extends Component {
    //인터벌 
    interval;
 
-   //컴포넌트의 라이프사이클 (아래 3가지 함수)
+   //컴포넌트의 라이프사이클 (아래 3가지 함수) (HOOKS방식으로는 아래 3가지 함수를 쓸 수 없다(지원을 안 함))
 
    //render가 성공적으로 실행 되었다면, 아래 함수가 실행이 된다. (즉, 컴포넌트가 첫 렌더링 된 후 실행)
    //하지만, 그 다음부터 setState등으로 렌더링이 다시 되는 경우에는 실행되지 않음 (즉 초기에만 한 번 실행)
@@ -79,14 +79,14 @@ class RSP extends Component {
        }
     }
 
-   onClickBtn = (choice) => {
+   onClickBtn = (choice) => () => { //고차함수(high order function) (리액트에서 많이 쓰는 패턴임)
       const {imgCoord} = this.state;
       clearInterval(this.interval);
       const myScore = scores[choice];
       const cpuScore = scores[computerChoice(imgCoord)];
       const diff = myScore - cpuScore;
 
-      if(diff === 0) {
+      if(diff === 0) { //setState가 여러개 있어도 setState를 다 하고 렌더링 한번한다.(인터벌로 각각 setState를 하는게 아닌 이상..)
          this.setState({
             result: '비겼습니다!',
          });
@@ -107,7 +107,7 @@ class RSP extends Component {
       }
       setTimeout(() => {
          this.interval = setInterval(this.changeHand, 100);
-      }, 2000);
+      }, 1000);
    };
 
    render() {
@@ -116,9 +116,10 @@ class RSP extends Component {
       <>
          <div id="computer" style={{ background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) ${imgCoord} 0` }}></div>
          <div>
-            <button id="rock" className="btn" onClick={() => this.onClickBtn('바위')}>바위</button>
-            <button id="scissor" className="btn" onClick={() => this.onClickBtn('가위')}>가위</button>
-            <button id="paper" className="btn" onClick={() => this.onClickBtn('보')}>보</button>
+            <button id="rock" className="btn" onClick={this.onClickBtn('바위')}>바위</button> 
+            {/* onclick메소드 안에 함수를 호출하는 부분이 들어있는 경우, 밖으로 빼낼 수 있다(고차함수 활용) */}
+            <button id="scissor" className="btn" onClick={this.onClickBtn('가위')}>가위</button>
+            <button id="paper" className="btn" onClick={this.onClickBtn('보')}>보</button>
          </div>
          <div>{result}</div>
       <div>현재 점수 : {score} 점</div>
