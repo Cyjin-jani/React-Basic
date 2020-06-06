@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom');
 
 const { hot } = require('react-hot-loader/root');
 
-const Lotto = require('./Lotto');
+const Lotto = require('./LottoHOOKS');
 
 const Hot = hot(Lotto);
 
