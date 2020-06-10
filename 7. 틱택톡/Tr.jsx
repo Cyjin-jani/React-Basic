@@ -1,10 +1,11 @@
 const React = require('react');
 const Td = require('./Td');
 
-const Tr = ({ rowData }) => {
+const Tr = ({ rowData, rowIndex, dispatch }) => {
+    console.log("Tr"+rowData);
     return (
     <tr>
-    {Array(rowData.length).fill().map((td) => (<Td>{''}</Td>))}
+    {Array(rowData.length).fill().map((td, i) => (<Td dispatch={dispatch} rowIndex={rowIndex} cellIndex={i} cellData={rowData[i]}>{''}</Td>))}
     </tr>
     );
 }
