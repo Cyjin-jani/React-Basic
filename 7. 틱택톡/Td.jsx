@@ -1,53 +1,18 @@
-// // const React = require('react');
-// // const { useCallback } = React;
-// //const { CLICK_CELL, CHANGE_TURN } = require('./TicTacToe'); 
-// import React , { useCallback } from 'react';
-// import { CLICK_CELL, CHANGE_TURN } from './TicTacToe';
+import React , { useCallback } from 'react';
+import { CLICK_CELL, CHANGE_TURN } from './TicTacToe';
 
-// const Td = ({ rowIndex, cellIndex, dispatch, cellData }) => {
-//     console.log("셀데이터");
-//     console.log(cellData);
-//     const onClickTd = useCallback(() => {
-//         console.log(rowIndex, cellIndex);
-//         console.log(cellData);
-//         dispatch({ type: CLICK_CELL, row: rowIndex, cell: cellIndex });
-//         dispatch({ type: CHANGE_TURN });
-//     }, []);
+const Td = ({ rowIndex, cellIndex, dispatch, cellData }) => {
+    console.log('td rendered');
 
-//     return (
-//     <td onClick={onClickTd}>{cellData}</td>
-//     );
-// }
+    const onClickTd = useCallback( () => {
+        console.log(rowIndex, cellIndex);
+        dispatch({ type: CLICK_CELL, row: rowIndex, cell: cellIndex });
+        dispatch({ type: CHANGE_TURN });
+    }, []);
 
-// // module.exports = Td;
-// export default Td;
-
-
-
-import React, { useCallback, useEffect, useRef, memo } from 'react';
-import { CLICK_CELL } from './TicTacToe';
-
-const Td = memo(({ rowIndex, cellIndex, dispatch, cellData }) => {
-  console.log('td rendered');
-
-  const ref = useRef([]);
-  useEffect(() => {
-    console.log(rowIndex === ref.current[0], cellIndex === ref.current[1], dispatch === ref.current[2], cellData === ref.current[3]);
-    console.log(cellData, ref.current[3]);
-    ref.current = [rowIndex, cellIndex, dispatch, cellData];
-  }, [rowIndex, cellIndex, dispatch, cellData]);
-
-  const onClickTd = useCallback(() => {
-    console.log(rowIndex, cellIndex);
-    if (cellData) {
-      return;
-    }
-    dispatch({ type: CLICK_CELL, row: rowIndex, cell: cellIndex });
-  }, [cellData]);
-
-  return (
+    return (
     <td onClick={onClickTd}>{cellData}</td>
-  )
-});
+    );
+}
 
 export default Td;
