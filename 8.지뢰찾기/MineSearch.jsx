@@ -75,7 +75,33 @@ const reducer = (state, action) => {
         case OPEN_CELL: {
             const tableData = [...state.tableData];
             tableData[action.row] = [...state.tableData[action.row]];
-            tableData[action.row][action.cell] = CODE.OPENED;
+            //tableData[action.row][action.cell] = CODE.OPENED;
+            let around = [];
+            //윗줄이 있는 지 체크, 있으면 윗줄의 세칸을 검사 대상에 넣어줌
+            if (tableData[action.row - 1]) {
+                around = around.concat(
+                    tableData[action.row - 1][action.cell -1],  
+                    tableData[action.row - 1][action.cell],  
+                    tableData[action.row - 1][action.cell + 1],
+                );
+            }
+            //내 왼쪽 칸, 오른쪽 칸을 검사 대상에 넣음
+            around = around.concat(
+                tableData[action.row][action.cell -1],  
+                tableData[action.row][action.cell + 1],  
+            )
+            // 내 아래줄이 있는 지 체크, 있으면 아랫줄의 칸들을 검사대상에 넣어줌
+            if (tableData[action.row + 1]) {
+                around = around.concat(
+                    tableData[action.row + 1][action.cell -1],  
+                    tableData[action.row + 1][action.cell],  
+                    tableData[action.row + 1][action.cell + 1],
+                )
+            }
+            //주변에 지뢰가 있는 지 찾아서 그 갯수를 센다
+            const count = around.filter((v) => [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)).length;
+            console.log(around, count);
+            tableData[action.row][action.cell] = count;
 
             return {
                 ...state,
