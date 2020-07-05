@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, useMemo } from 'react';
+import React, { useReducer, createContext, useMemo, useEffect } from 'react';
 import Table from './Table';
 import Form from './Form';
 
@@ -22,9 +22,15 @@ export const TableContext = createContext({
 
 const initialState = {
     tableData: [],
+    data: {
+        row: 0,
+        cell: 0,
+        mine: 0,
+    },
     timer: 0,
     result: '',
     halted: true,
+    openedCount: 0,
 };
 
 const plantMine = (row, cell, mine) => {
@@ -63,22 +69,31 @@ export const CLICK_MINE = 'CLICK_MINE';
 export const FLAG_CELL = 'FLAG_CELL';
 export const QUESTION_CELL = 'QUESTION_CELL';
 export const NORMALIZE_CELL = 'NORMALIZE_CELL';
+export const INCREMENT_TIMER = 'INCREMENT_TIMER';
 
 const reducer = (state, action) => {
     switch (action.type) {
         case START_GAME:
             return {
                 ...state,
+                data: {
+                  row: action.row,
+                  cell: action.cell,
+                  mine: action.mine,  
+                },
+                openedCount: 0,
                 tableData: plantMine(action.row, action.cell, action.mine),
                 halted: false,
+                timer: 0,
             };
         case OPEN_CELL: {
             const tableData = [...state.tableData];
-            tableData[action.row] = [...state.tableData[action.row]];
+            //tableData[action.row] = [...state.tableData[action.row]];
             tableData.forEach((row, i) => {
                 tableData[i] = [...row];
             });
             const checked = [];
+            let openedCount = 0;
             //내 기준으로 칸을 검사하는 함수
             const checkAround = (row, cell) => {
                 if (row < 0 || row >= tableData.length || cell < 0 || cell > tableData[0].length) {
@@ -94,7 +109,9 @@ const reducer = (state, action) => {
                     checked.push(row + ',' + cell);
                 } //한번 연 칸은 무시
                 console.log(checked);
-                let around = [];
+                let around = [
+                    tableData[row][cell - 1], tableData[row][cell + 1],
+                ];
                 //윗줄이 있는 지 체크, 있으면 윗줄의 세칸을 검사 대상에 넣어줌
                 if (tableData[row - 1]) {
                     around = around.concat(
@@ -103,11 +120,11 @@ const reducer = (state, action) => {
                         tableData[row - 1][cell + 1],
                     );
                 }
-                //내 왼쪽 칸, 오른쪽 칸을 검사 대상에 넣음
-                around = around.concat(
-                    tableData[row][cell -1],  
-                    tableData[row][cell + 1],  
-                )
+                // //내 왼쪽 칸, 오른쪽 칸을 검사 대상에 넣음
+                // around = around.concat(
+                //     tableData[row][cell -1],  
+                //     tableData[row][cell + 1],  
+                // )
                 // 내 아래줄이 있는 지 체크, 있으면 아랫줄의 칸들을 검사대상에 넣어줌
                 if (tableData[row + 1]) {
                     around = around.concat(
@@ -120,8 +137,8 @@ const reducer = (state, action) => {
                 //filter를 하는 이유가, undefined를 사라지게 하기 위함.
                 //좌우에 없는 경우 undefined가 되어 에러가 나므로...
                 const count = around.filter((v) => [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v)).length;
-                console.log(around, count);
-                tableData[row][cell] = count;
+                //console.log(around, count);
+                //tableData[row][cell] = count;
 
                 if (count === 0) { //주변칸 오픈
                     if (row > -1) {
@@ -132,7 +149,7 @@ const reducer = (state, action) => {
                             near.push([row -1, cell + 1]);
                         }
                         near.push([row, cell - 1]);
-                        near.push([row - 1, cell + 1]);
+                        near.push([row, cell + 1]);
                         if (row + 1 < tableData.length) { //제일 아랫칸보다 아래는 없음
                             near.push([row +1, cell -1]);
                             near.push([row +1, cell]);
@@ -145,15 +162,27 @@ const reducer = (state, action) => {
                         });
                     }
                 }
+                if (tableData[row][cell] === CODE.NORMAL){ // 내 칸이 닫힌 칸이면 카운트 증가
+                    openedCount += 1;
+                }
                 tableData[row][cell] = count;
-            };
-            //tableData[action.row][action.cell] = CODE.OPENED;
-                
+            };  
             checkAround(action.row, action.cell);
+            let halted = false;
+            let result = '';
+            console.log(state.data.row * state.data.cell - state.data.mine, state.openedCount, openedCount);
+            
+            if (state.data.row * state.data.cell - state.data.mine === state.openedCount + openedCount) { //승리조건
+                halted = true;
+                result = `${state.timer}초 만에 승리하셨습니다.`;
+            }
 
             return {
                 ...state,
-                tableData, 
+                tableData,
+                openedCount: state.openedCount + openedCount,
+                halted,
+                result,
             };
         }
         case CLICK_MINE: {
@@ -206,7 +235,12 @@ const reducer = (state, action) => {
                 tableData,
             };    
         }
-        
+        case INCREMENT_TIMER: {
+            return {
+                ...state,
+                timer: state.timer + 1,
+            }
+        }
         default:
             return state;
     }
@@ -219,6 +253,18 @@ const MineSearch = () => {
     const value = useMemo(() => ({ tableData, halted, dispatch }), [tableData, halted]);
     //값을 기억해주지 않으면, 매번 해당 값(객체)이 새로 렌더링 시에 생겨나게 되므로 이렇게 메모를 써서 캐싱해두는 것이 필요
     //테이블 데이터가 변경되는 경우에만 값이 바뀌도록 한다 ==> 성능 최적화에 도움
+
+    useEffect(() => {
+        let timer;
+        if (halted === false) {
+             timer = setInterval(() => {
+                dispatch({ type: INCREMENT_TIMER });
+            }, 1000);
+            return () => {
+                clearInterval(timer);
+            }
+        }
+    }, [halted]);
 
     return (
     <TableContext.Provider value={value}>
