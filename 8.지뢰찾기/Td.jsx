@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, memo, useMemo } from 'react';
 import { TableContext, CODE, OPEN_CELL, FLAG_CELL, QUESTION_CELL, NORMALIZE_CELL, CLICK_MINE } from './MineSearch';
 
 const getTdStyle = (code) => {
@@ -31,6 +31,8 @@ const getTdStyle = (code) => {
 };
 
 const getTdText = (code) => {
+    console.log('get Td text');
+    
     switch(code) {
         case CODE.NORMAL:
             return '';
@@ -50,7 +52,7 @@ const getTdText = (code) => {
     }
 }
 
-const Td = ({ rowIndex, cellIndex }) => {
+const Td = memo(({ rowIndex, cellIndex }) => {
     const { tableData, dispatch, halted } = useContext(TableContext);
 
     const onClickTd = useCallback(() => {
@@ -97,12 +99,30 @@ const Td = ({ rowIndex, cellIndex }) => {
         }
     }, [tableData[rowIndex][cellIndex], halted]);
     
+    //useContext가 있어서 이 Td는 리렌더링이 한 번 일어나게 됨 (필연적)
+    //다만 정말 아래 리턴 부분이 렌더링 되는지를 보기 위해 getTdText에 로그를 찍어본 결과, 무사히 한 칸만 렌더링이 된다
+    //console.log('td Rendered');
+
+    // return useMemo(() => (
+    //     <td style={getTdStyle(tableData[rowIndex][cellIndex])} onClick={onClickTd}
+    //     onContextMenu={onRightClickTd}
+    //     >
+    //         {getTdText(tableData[rowIndex][cellIndex])}</td>
+    // ), [tableData[rowIndex][cellIndex]]);
+
+    //위와 같이 useMemo를 쓰기 싫은 경우, 아래와 같이 컴포넌트를 두 개 만들어서 사용이 가능하다
+    return <RealTd onClickTd={onClickTd} onRightClickTd={onRightClickTd} data={tableData[rowIndex][cellIndex]}/>;
+});
+
+const RealTd = memo(({onClickTd, onRightClickTd, data}) => {
+    console.log('realTd Rendered');
     return (
-        <td style={getTdStyle(tableData[rowIndex][cellIndex])} onClick={onClickTd}
+        <td 
+        style={getTdStyle(data)} 
+        onClick={onClickTd}
         onContextMenu={onRightClickTd}
-        >
-            {getTdText(tableData[rowIndex][cellIndex])}</td>
-    );
-};
+        >{getTdText(data)}</td>
+    )
+});
 
 export default Td;

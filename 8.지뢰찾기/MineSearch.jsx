@@ -267,7 +267,7 @@ const MineSearch = () => {
     }, [halted]);
 
     return (
-    <TableContext.Provider value={value}>
+    <TableContext.Provider value={value}> {/* 항상 이렇게 프로바이더로 값을 넘길때는, 따로 함수로 빼서 usememo를 해주어야 성능에 문제가 없다 value가 바뀔 때마다 아래 부분들 form이랑 table이 리렌더링 되기 때문*/}
         <Form />
         <div>{timer}</div>    
         <Table />
