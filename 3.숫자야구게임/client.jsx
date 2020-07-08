@@ -4,7 +4,7 @@ const ReactDOM = require('react-dom');
 const { hot } = require('react-hot-loader/root');
 
 //const NumberBaseBall = require('./RenderTest');
-const NumberBaseBall = require('./NumberBaseBallHOOKS');
+const NumberBaseBall = require('./NumberBaseBall');
 
 const Hot = hot(NumberBaseBall);
 
