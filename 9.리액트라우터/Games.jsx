@@ -1,8 +1,5 @@
 import React from 'react';
 import { BrowserRouter, HashRouter, Route, Link } from 'react-router-dom';
-import NumberBaseball from '../3.숫자야구게임/NumberBaseBall';
-import RSP from '../5. 가위바위보게임/RSP';
-import Lotto from '../6.로또추첨기/Lotto';
 import GameMatcher from './GameMatcher';
 
 const Games = () => {
