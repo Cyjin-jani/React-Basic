@@ -27,7 +27,7 @@ const Games = () => {
         */}
         <div>
         공통인 부분
-        <Link to="/game/number-baseball">숫자야구</Link>
+        <Link to="/game/number-baseball?query=10&hello=yjCho&bye=bye">숫자야구</Link>
         &nbsp;
         <Link to="/game/rock-scissors-paper">가위바위보</Link>
         &nbsp;
