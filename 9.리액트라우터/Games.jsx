@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, HashRouter, Route, Link } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Route, Link, Switch } from 'react-router-dom';
 import GameMatcher from './GameMatcher';
 
 const Games = () => {
@@ -44,8 +44,29 @@ const Games = () => {
             {/* 동적 라우트 매칭  (라우트를 줄일 수 있는 방법) 
             :name 이 부분은 동적으로 바뀌게 된다
             */}
-            <Route path="/game/:name" component={GameMatcher}/>
+            {/* <Route path="/game/:name" component={GameMatcher}/> */}
+            {/* 만약 게임매쳐에 props를 보내고 싶은 경우에는 아래와 같은 방법으로 보낸다 */}
+            {/* <Route path="/game/:name" component={() => <GameMatcher props={props.abc} />} /> */}
+            {/* <Route path="/game/:name" render={(props) => <GameMatcher props={props.abc} />} /> */}
+            <Route path="/game/:name" render={(props) => <GameMatcher {...props} />} />
+            {/* 만약 아래와 같이 Route가 같은 패스가 많이 있는경우, (동시에 라우트가 여러개 뜨는 경우)
+                가장 맨 처음 일치하는 것만 렌더링 되도록 해주는 것이 바로 switch이다 
+            <Switch>
+            <Route path="/game/number-baseball" render={(props) => <GameMatcher {...props} />} />
+            <Route path="/game/number-baseball" render={(props) => <GameMatcher {...props} />} />
+            <Route path="/game/number-baseball" render={(props) => <GameMatcher {...props} />} />
+            <Route path="/game/number-baseball" render={(props) => <GameMatcher {...props} />} />
+            </Switch>
+            
+            Exact에 대해서....
 
+            path가 "/"로만 되어 있어도, 상위 주소(패스)이기 때문에 일치한다고 생각되는 경우가 있다.
+            이런 경우에는, exact를 사용해주어야 한다 (스위치로도 걸러지지 않음)
+            path의 앞에 exact를 붙여 주면, path랑 정확히 일치하는 주소로만 렌더링이 된다
+            예시)
+            <Route exact path="/game/number-baseball" render={(props) => <GameMatcher {...props} />} />
+
+            */}
         </div>
         </BrowserRouter>
     );
